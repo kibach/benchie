@@ -9,6 +9,9 @@ cmake_minimum_required(VERSION 3.4.1)
 # You can define multiple libraries, and CMake builds it for you.
 # Gradle automatically packages shared libraries with your APK.
 
+include_directories(src/main/cpp/tinymembench)
+link_directories(src/main/cpp/tinymembench)
+
 add_library( # Sets the name of the library.
              native-lib
 
@@ -19,6 +22,19 @@ add_library( # Sets the name of the library.
              # Associated headers in the same location as their source
              # file are automatically included.
              src/main/cpp/native-lib.cpp )
+
+add_library( # Sets the name of the library.
+             tmblib
+
+             # Sets the library as a shared library.
+             SHARED
+
+             # Provides a relative path to your source file(s).
+             # Associated headers in the same location as their source
+             # file are automatically included.
+             src/main/cpp/tinymembench/asm-opt.c
+             src/main/cpp/tinymembench/util.c
+             src/main/cpp/tinymembench/tmblib.cpp )
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because system libraries are included in the search path by
@@ -39,6 +55,13 @@ find_library( # Sets the name of the path variable.
 
 target_link_libraries( # Specifies the target library.
                        native-lib
+
+                       # Links the target library to the log library
+                       # included in the NDK.
+                       ${log-lib} )
+
+target_link_libraries( # Specifies the target library.
+                       tmblib
 
                        # Links the target library to the log library
                        # included in the NDK.
