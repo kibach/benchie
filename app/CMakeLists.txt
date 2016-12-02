@@ -9,8 +9,26 @@ cmake_minimum_required(VERSION 3.4.1)
 # You can define multiple libraries, and CMake builds it for you.
 # Gradle automatically packages shared libraries with your APK.
 
+# set_property(SOURCE <myfile>.S PROPERTY LANGUAGE C)
+
+set(can_use_assembler TRUE)
+enable_language(C ASM)
+
 include_directories(src/main/cpp/tinymembench)
 link_directories(src/main/cpp/tinymembench)
+
+SET(GCC_COVERAGE_LINK_FLAGS    "-lgnustl_static")
+
+SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS}")
+SET(ASM_OPTIONS "-x assembler-with-cpp")
+SET(CMAKE_ASM_FLAGS "${CFLAGS} ${ASM_OPTIONS}" )
+
+set_property(SOURCE src/main/cpp/tinymembench/aarch64-asm.S PROPERTY COMPILE_FLAGS "-x assembler-with-cpp")
+set_property(SOURCE src/main/cpp/tinymembench/arm-neon.S PROPERTY COMPILE_FLAGS "-x assembler-with-cpp")
+set_property(SOURCE src/main/cpp/tinymembench/mips-32.S PROPERTY COMPILE_FLAGS "-x assembler-with-cpp")
+set_property(SOURCE src/main/cpp/tinymembench/x86-sse2.S PROPERTY COMPILE_FLAGS "-x assembler-with-cpp")
+set_property(SOURCE src/main/cpp/tinymembench/asm-opt.c PROPERTY LANGUAGE C)
+set_property(SOURCE src/main/cpp/tinymembench/util.c PROPERTY LANGUAGE C)
 
 add_library( # Sets the name of the library.
              native-lib
@@ -32,6 +50,10 @@ add_library( # Sets the name of the library.
              # Provides a relative path to your source file(s).
              # Associated headers in the same location as their source
              # file are automatically included.
+#             src/main/cpp/tinymembench/aarch64-asm.S
+#             src/main/cpp/tinymembench/arm-neon.S
+             src/main/cpp/tinymembench/mips-32.S
+             src/main/cpp/tinymembench/x86-sse2.S
              src/main/cpp/tinymembench/asm-opt.c
              src/main/cpp/tinymembench/util.c
              src/main/cpp/tinymembench/tmblib.cpp )
@@ -66,3 +88,4 @@ target_link_libraries( # Specifies the target library.
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib} )
+

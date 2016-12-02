@@ -20,14 +20,12 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-
+extern "C" {
 #include <string.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h>
+#include "stdlib.h"
 #include <math.h>
-#include <sys/time.h>
-#include "jni.h"
 
 #ifdef __linux__
 #include <unistd.h>
@@ -37,12 +35,12 @@
 #include <sys/ioctl.h>
 #endif
 
-extern "C" {
 #include "util.h"
 #include "asm-opt.h"
 #include "version.h"
 }
 
+#include "jni.h"
 #include <iostream>
 
 #define SIZE             (32 * 1024 * 1024)
@@ -371,15 +369,15 @@ static uint32_t rand32()
     return (hi << 16) + lo;
 }
 
-int latency_bench(int size, int count, int use_hugepage)
-{
+extern "C" {
+int latency_bench(int size, int count, int use_hugepage) {
     double t, t2, t_before, t_after, t_noaccess, t_noaccess2;
     double xs, xs0, xs1, xs2;
     double ys, ys0, ys1, ys2;
     double min_t, min_t2;
     int nbits, n;
     char *buffer, *buffer_alloc;
-#if !defined(__linux__) || !defined(MADV_HUGEPAGE)
+#if !defined(__linux__) || !defined(MADV_HUGEPAGE) || defined(__ANDROID__)
     if (use_hugepage)
         return 0;
     buffer_alloc = (char *)malloc(size + 4095);
@@ -387,20 +385,18 @@ int latency_bench(int size, int count, int use_hugepage)
         return 0;
     buffer = (char *)(((uintptr_t)buffer_alloc + 4095) & ~(uintptr_t)4095);
 #else
-    if (posix_memalign((void **)&buffer_alloc, 4 * 1024 * 1024, size) != 0)
+    if (posix_memalign((void **) &buffer_alloc, 4 * 1024 * 1024, size) != 0)
         return 0;
     buffer = buffer_alloc;
     if (use_hugepage && madvise(buffer, size, use_hugepage > 0 ?
-                                MADV_HUGEPAGE : MADV_NOHUGEPAGE) != 0)
-    {
+                                              MADV_HUGEPAGE : MADV_NOHUGEPAGE) != 0) {
         free(buffer_alloc);
         return 0;
     }
 #endif
     memset(buffer, 0, size);
 
-    for (n = 1; n <= MAXREPEATS; n++)
-    {
+    for (n = 1; n <= MAXREPEATS; n++) {
         t_before = gettime();
         random_read_test(buffer, count, 1);
         t_after = gettime();
@@ -422,12 +418,10 @@ int latency_bench(int size, int count, int use_hugepage)
     else
         printf("\n");
 
-    for (nbits = 10; (1 << nbits) <= size; nbits++)
-    {
+    for (nbits = 10; (1 << nbits) <= size; nbits++) {
         int testsize = 1 << nbits;
         xs1 = xs2 = ys = ys1 = ys2 = 0;
-        for (n = 1; n <= MAXREPEATS; n++)
-        {
+        for (n = 1; n <= MAXREPEATS; n++) {
             /*
              * Select a random offset in order to mitigate the unpredictability
              * of cache associativity effects when dealing with different
@@ -461,8 +455,7 @@ int latency_bench(int size, int count, int use_hugepage)
             if (n == 1 || t2 < min_t2)
                 min_t2 = t2;
 
-            if (n > 2)
-            {
+            if (n > 2) {
                 xs = sqrt((xs2 * n - xs1 * xs1) / (n * (n - 1)));
                 ys = sqrt((ys2 * n - ys1 * ys1) / (n * (n - 1)));
                 if (xs < min_t / 1000. && ys < min_t2 / 1000.)
@@ -470,10 +463,11 @@ int latency_bench(int size, int count, int use_hugepage)
             }
         }
         printf("%10d : %6.1f ns          /  %6.1f ns \n", (1 << nbits),
-            min_t * 1000000000. / count,  min_t2 * 1000000000. / count);
+               min_t * 1000000000. / count, min_t2 * 1000000000. / count);
     }
     free(buffer_alloc);
     return 1;
+}
 }
 
 int main(void)
