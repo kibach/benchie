@@ -1,4 +1,4 @@
-package com.example.kbocharov.bochbench;
+package com.me.kbocharov.bochbench;
 
 import org.junit.Test;
 

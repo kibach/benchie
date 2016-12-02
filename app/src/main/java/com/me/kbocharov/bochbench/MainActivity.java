@@ -1,4 +1,4 @@
-package com.example.kbocharov.bochbench;
+package com.me.kbocharov.bochbench;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -6,12 +6,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.kbocharov.bochbench.benchmark.BenchmarkResponder;
-import com.example.kbocharov.bochbench.benchmark.BenchmarkResult;
-import com.example.kbocharov.bochbench.benchmark.BenchmarkTask;
+import com.me.kbocharov.bochbench.benchmark.BenchmarkResponder;
+import com.me.kbocharov.bochbench.benchmark.BenchmarkResult;
+import com.me.kbocharov.bochbench.benchmark.BenchmarkTask;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity implements BenchmarkResponder {
 

@@ -1,4 +1,4 @@
-package com.example.kbocharov.bochbench.benchmark;
+package com.me.kbocharov.bochbench.benchmark;
 
 import android.os.AsyncTask;
 
