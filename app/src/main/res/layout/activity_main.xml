@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.kbocharov.bochbench.MainActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                app:srcCompat="@drawable/speed"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:adjustViewBounds="true"
+                android:id="@+id/imageView2" />
+
+            <TextView
+                android:text="Unknown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/scoreView"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+
+                android:layout_alignBottom="@+id/imageView2"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="86dp"
+                android:textSize="78sp" />
+
+            <Button
+                android:text="Start benchmark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/button2"
+                android:layout_marginTop="32dp"
+                android:layout_below="@+id/imageView2"
+                android:layout_centerHorizontal="true" />
+
+            <RelativeLayout
+                android:id="@+id/loadingPanel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_marginTop="142dp"
+                android:layout_alignTop="@+id/scoreView"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
