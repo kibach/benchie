@@ -9,6 +9,8 @@ import android.widget.TextView;
 import com.me.kbocharov.bochbench.benchmark.BenchmarkResponder;
 import com.me.kbocharov.bochbench.benchmark.BenchmarkResult;
 import com.me.kbocharov.bochbench.benchmark.BenchmarkTask;
+import com.me.kbocharov.bochbench.benchmark.tinymembench.NativeBenchInfo;
+import com.me.kbocharov.bochbench.benchmark.tinymembench.Runner;
 
 import java.util.List;
 
@@ -32,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements BenchmarkResponde
         btnStart = (Button) findViewById(R.id.button2);
         textScore = (TextView) findViewById(R.id.scoreView);
         final MainActivity mainActivity = this;
+        final Runner r = new Runner();
+
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -40,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements BenchmarkResponde
                 findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
                 benchmarkTask = new BenchmarkTask();
                 benchmarkTask.setResponder(mainActivity);
+                benchmarkTask.setRunner(r);
                 benchmarkTask.execute();
             }
         });

@@ -2,6 +2,9 @@ package com.me.kbocharov.bochbench.benchmark;
 
 import android.os.AsyncTask;
 
+import com.me.kbocharov.bochbench.benchmark.tinymembench.NativeBenchInfo;
+import com.me.kbocharov.bochbench.benchmark.tinymembench.Runner;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,11 +21,18 @@ public class BenchmarkTask extends AsyncTask<Void, Void, List<BenchmarkResult>> 
     };
 
     protected BenchmarkResponder responder;
+    protected Runner runner;
 
     @Override
     protected List<BenchmarkResult> doInBackground(Void... voids) {
         int[] multiplicationSizes = {10, 100, 1000};
         ArrayList<BenchmarkResult> list = new ArrayList<>();
+
+        NativeBenchInfo[] nbis = runner.getCSpeedBench();
+
+        runner.setUpStage();
+        runner.runSpeedBench(nbis[0]);
+        runner.turnDownStage();
 
         for (Benchmark b : multiplicationBenchmarks) {
             for (int n : multiplicationSizes) {
@@ -44,5 +54,9 @@ public class BenchmarkTask extends AsyncTask<Void, Void, List<BenchmarkResult>> 
 
     public void setResponder(BenchmarkResponder responder) {
         this.responder = responder;
+    }
+
+    public void setRunner(Runner r) {
+        this.runner = r;
     }
 }

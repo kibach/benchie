@@ -25,12 +25,12 @@ SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS
 SET(ASM_OPTIONS "-x assembler-with-cpp")
 SET(CMAKE_ASM_FLAGS "${CFLAGS} ${ASM_OPTIONS}" )
 
-set_property(SOURCE src/main/cpp/tinymembench/aarch64-asm.S PROPERTY COMPILE_FLAGS "-x assembler-with-cpp")
-set_property(SOURCE src/main/cpp/tinymembench/arm-neon.S PROPERTY COMPILE_FLAGS "-x assembler-with-cpp")
-set_property(SOURCE src/main/cpp/tinymembench/mips-32.S PROPERTY COMPILE_FLAGS "-x assembler-with-cpp")
-set_property(SOURCE src/main/cpp/tinymembench/x86-sse2.S PROPERTY COMPILE_FLAGS "-x assembler-with-cpp")
-set_property(SOURCE src/main/cpp/tinymembench/asm-opt.c PROPERTY LANGUAGE C)
-set_property(SOURCE src/main/cpp/tinymembench/util.c PROPERTY LANGUAGE C)
+# set_property(SOURCE src/main/cpp/tinymembench/aarch64-asm.S PROPERTY COMPILE_FLAGS "-x assembler-with-cpp")
+# set_property(SOURCE src/main/cpp/tinymembench/arm-neon.S PROPERTY COMPILE_FLAGS "-x assembler-with-cpp")
+# set_property(SOURCE src/main/cpp/tinymembench/mips-32.S PROPERTY COMPILE_FLAGS "-x assembler-with-cpp")
+# set_property(SOURCE src/main/cpp/tinymembench/x86-sse2.S PROPERTY COMPILE_FLAGS "-x assembler-with-cpp")
+# set_property(SOURCE src/main/cpp/tinymembench/asm-opt.c PROPERTY LANGUAGE C)
+# set_property(SOURCE src/main/cpp/tinymembench/util.c PROPERTY LANGUAGE C)
 
 add_library( # Sets the name of the library.
              native-lib
@@ -43,22 +43,22 @@ add_library( # Sets the name of the library.
              # file are automatically included.
              src/main/cpp/native-lib.cpp )
 
-add_library( # Sets the name of the library.
-             tmblib
+# add_library( # Sets the name of the library.
+#             tmblib
 
              # Sets the library as a shared library.
-             SHARED
+#             SHARED
 
              # Provides a relative path to your source file(s).
              # Associated headers in the same location as their source
              # file are automatically included.
-             src/main/cpp/tinymembench/aarch64-asm.S
-             src/main/cpp/tinymembench/arm-neon.S
-             src/main/cpp/tinymembench/mips-32.S
-             src/main/cpp/tinymembench/x86-sse2.S
-             src/main/cpp/tinymembench/asm-opt.c
-             src/main/cpp/tinymembench/util.c
-             src/main/cpp/tinymembench/tmblib.cpp )
+#             src/main/cpp/tinymembench/aarch64-asm.S
+#             src/main/cpp/tinymembench/arm-neon.S
+#             src/main/cpp/tinymembench/mips-32.S
+#             src/main/cpp/tinymembench/x86-sse2.S
+#             src/main/cpp/tinymembench/asm-opt.c
+#             src/main/cpp/tinymembench/util.c
+#             src/main/cpp/tinymembench/tmblib.cpp )
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because system libraries are included in the search path by
@@ -84,10 +84,10 @@ target_link_libraries( # Specifies the target library.
                        # included in the NDK.
                        ${log-lib} )
 
-target_link_libraries( # Specifies the target library.
-                       tmblib
+#target_link_libraries( # Specifies the target library.
+#                       tmblib
 
                        # Links the target library to the log library
                        # included in the NDK.
-                       ${log-lib} )
+#                       ${log-lib} )
 
