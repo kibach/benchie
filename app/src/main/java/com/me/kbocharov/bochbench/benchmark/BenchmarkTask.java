@@ -17,10 +17,10 @@ import java.util.List;
 
 public class BenchmarkTask extends AsyncTask<Void, Void, List<BenchmarkResult>> {
     private static Benchmark[] multiplicationBenchmarks = {
-        new JavaDoubleMultiplicationBenchmark(),
-        new JavaFloatMultiplicationBenchmark(),
-        //new NativeDoubleMultiplicationBenchmark(),
-        //new NativeFloatMultiplicationBenchmark()
+        //new JavaDoubleMultiplicationBenchmark(),
+        //new JavaFloatMultiplicationBenchmark(),
+        new NativeDoubleMultiplicationBenchmark(),
+        new NativeFloatMultiplicationBenchmark()
     };
 
     protected BenchmarkResponder responder;
@@ -34,7 +34,8 @@ public class BenchmarkTask extends AsyncTask<Void, Void, List<BenchmarkResult>> 
 
         NativeBenchInfo[] nbis = runner.getCSpeedBench();
 
-        runner.setUpStage();
+        /*runner.setUpStage();
+
         SpeedBenchResult sbr = runner.runSpeedBench(nbis[0]);
         LatencyBenchResult[] lbrs_huge = runner.runLatencyBench(Runner.MADV_HUGEPAGE);
         LatencyBenchResult[] lbrs_nohuge = runner.runLatencyBench(Runner.MADV_NOHUGEPAGE);
@@ -49,7 +50,7 @@ public class BenchmarkTask extends AsyncTask<Void, Void, List<BenchmarkResult>> 
                 lbrs[i].double_read = (lbrs_huge[i].double_read + lbrs_nohuge[i].double_read) / 2;
             }
         }
-        runner.turnDownStage();
+        runner.turnDownStage();*/
 
         for (Benchmark b : multiplicationBenchmarks) {
             for (int n : multiplicationSizes) {
