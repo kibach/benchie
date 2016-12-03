@@ -124,30 +124,30 @@ static bench_info empty[] = {{NULL, 0, NULL}};
 
 static bench_info x86_sse2[] =
 {
-    { "MOVSB copy", 0, aligned_block_copy_movsb },
-    { "MOVSD copy", 0, aligned_block_copy_movsd },
-    { "SSE2 copy", 0, aligned_block_copy_sse2 },
-    { "SSE2 nontemporal copy", 0, aligned_block_copy_nt_sse2 },
-    { "SSE2 copy prefetched (32 bytes step)", 0, aligned_block_copy_pf32_sse2 },
-    { "SSE2 copy prefetched (64 bytes step)", 0, aligned_block_copy_pf64_sse2 },
-    { "SSE2 nontemporal copy prefetched (32 bytes step)", 0, aligned_block_copy_nt_pf32_sse2 },
-    { "SSE2 nontemporal copy prefetched (64 bytes step)", 0, aligned_block_copy_nt_pf64_sse2 },
-    { "SSE2 2-pass copy", 1, aligned_block_copy_sse2 },
-    { "SSE2 2-pass copy prefetched (32 bytes step)", 1, aligned_block_copy_pf32_sse2 },
-    { "SSE2 2-pass copy prefetched (64 bytes step)", 1, aligned_block_copy_pf64_sse2 },
-    { "SSE2 2-pass nontemporal copy", 1, aligned_block_copy_nt_sse2 },
-    { "SSE2 fill", 0, aligned_block_fill_sse2 },
-    { "SSE2 nontemporal fill", 0, aligned_block_fill_nt_sse2 },
-    { NULL, 0, NULL }
+    { "MOVSB copy",                                       0, 1, aligned_block_copy_movsb },
+    { "MOVSD copy",                                       0, 1, aligned_block_copy_movsd },
+    { "SSE2 copy",                                        0, 1, aligned_block_copy_sse2 },
+    { "SSE2 nontemporal copy",                            0, 1, aligned_block_copy_nt_sse2 },
+    { "SSE2 copy prefetched (32 bytes step)",             0, 1, aligned_block_copy_pf32_sse2 },
+    { "SSE2 copy prefetched (64 bytes step)",             0, 1, aligned_block_copy_pf64_sse2 },
+    { "SSE2 nontemporal copy prefetched (32 bytes step)", 0, 1, aligned_block_copy_nt_pf32_sse2 },
+    { "SSE2 nontemporal copy prefetched (64 bytes step)", 0, 1, aligned_block_copy_nt_pf64_sse2 },
+    { "SSE2 2-pass copy",                                 1, 1, aligned_block_copy_sse2 },
+    { "SSE2 2-pass copy prefetched (32 bytes step)",      1, 1, aligned_block_copy_pf32_sse2 },
+    { "SSE2 2-pass copy prefetched (64 bytes step)",      1, 1, aligned_block_copy_pf64_sse2 },
+    { "SSE2 2-pass nontemporal copy",                     1, 1, aligned_block_copy_nt_sse2 },
+    { "SSE2 fill",                                        0, 1, aligned_block_fill_sse2 },
+    { "SSE2 nontemporal fill",                            0, 1, aligned_block_fill_nt_sse2 },
+    { NULL, 0, 0, NULL }
 };
 
 static bench_info x86_sse2_fb[] =
 {
-    { "MOVSD copy (from framebuffer)", 0, aligned_block_copy_movsd },
-    { "MOVSD 2-pass copy (from framebuffer)", 1, aligned_block_copy_movsd },
-    { "SSE2 copy (from framebuffer)", 0, aligned_block_copy_sse2 },
-    { "SSE2 2-pass copy (from framebuffer)", 1, aligned_block_copy_sse2 },
-    { NULL, 0, NULL }
+    { "MOVSD copy (from framebuffer)",        0, 1, aligned_block_copy_movsd },
+    { "MOVSD 2-pass copy (from framebuffer)", 1, 1, aligned_block_copy_movsd },
+    { "SSE2 copy (from framebuffer)",         0, 1, aligned_block_copy_sse2 },
+    { "SSE2 2-pass copy (from framebuffer)",  1, 1, aligned_block_copy_sse2 },
+    { NULL, 0, 0, NULL }
 };
 
 static int check_sse2_support(void)
@@ -205,72 +205,72 @@ bench_info *get_asm_framebuffer_benchmarks(void)
 
 static bench_info arm_neon[] =
 {
-    { "NEON read", 0, aligned_block_read_neon },
-    { "NEON read prefetched (32 bytes step)", 0, aligned_block_read_pf32_neon },
-    { "NEON read prefetched (64 bytes step)", 0, aligned_block_read_pf64_neon },
-    { "NEON read 2 data streams", 0, aligned_block_read2_neon },
-    { "NEON read 2 data streams prefetched (32 bytes step)", 0, aligned_block_read2_pf32_neon },
-    { "NEON read 2 data streams prefetched (64 bytes step)", 0, aligned_block_read2_pf64_neon },
-    { "NEON copy", 0, aligned_block_copy_neon },
-    { "NEON copy prefetched (32 bytes step)", 0, aligned_block_copy_pf32_neon },
-    { "NEON copy prefetched (64 bytes step)", 0, aligned_block_copy_pf64_neon },
-    { "NEON unrolled copy", 0, aligned_block_copy_unrolled_neon },
-    { "NEON unrolled copy prefetched (32 bytes step)", 0, aligned_block_copy_unrolled_pf32_neon },
-    { "NEON unrolled copy prefetched (64 bytes step)", 0, aligned_block_copy_unrolled_pf64_neon },
-    { "NEON copy backwards", 0, aligned_block_copy_backwards_neon },
-    { "NEON copy backwards prefetched (32 bytes step)", 0, aligned_block_copy_backwards_pf32_neon },
-    { "NEON copy backwards prefetched (64 bytes step)", 0, aligned_block_copy_backwards_pf64_neon },
-    { "NEON 2-pass copy", 1, aligned_block_copy_neon },
-    { "NEON 2-pass copy prefetched (32 bytes step)", 1, aligned_block_copy_pf32_neon },
-    { "NEON 2-pass copy prefetched (64 bytes step)", 1, aligned_block_copy_pf64_neon },
-    { "NEON unrolled 2-pass copy", 1, aligned_block_copy_unrolled_neon },
-    { "NEON unrolled 2-pass copy prefetched (32 bytes step)", 1, aligned_block_copy_unrolled_pf32_neon },
-    { "NEON unrolled 2-pass copy prefetched (64 bytes step)", 1, aligned_block_copy_unrolled_pf64_neon },
-    { "NEON fill", 0, aligned_block_fill_neon },
-    { "NEON fill backwards", 0, aligned_block_fill_backwards_neon },
-    { "VFP copy", 0, aligned_block_copy_vfp },
-    { "VFP 2-pass copy", 1, aligned_block_copy_vfp },
-    { "ARM fill (STRD)", 0, aligned_block_fill_strd_armv5te },
-    { "ARM fill (STM with 8 registers)", 0, aligned_block_fill_stm8_armv4 },
-    { "ARM fill (STM with 4 registers)", 0, aligned_block_fill_stm4_armv4 },
-    { "ARM copy prefetched (incr pld)", 0, aligned_block_copy_incr_armv5te },
-    { "ARM copy prefetched (wrap pld)", 0, aligned_block_copy_wrap_armv5te },
-    { "ARM 2-pass copy prefetched (incr pld)", 1, aligned_block_copy_incr_armv5te },
-    { "ARM 2-pass copy prefetched (wrap pld)", 1, aligned_block_copy_wrap_armv5te },
-    { NULL, 0, NULL }
+    { "NEON read",                                            0, 1, aligned_block_read_neon },
+    { "NEON read prefetched (32 bytes step)",                 0, 1, aligned_block_read_pf32_neon },
+    { "NEON read prefetched (64 bytes step)",                 0, 1, aligned_block_read_pf64_neon },
+    { "NEON read 2 data streams",                             0, 1, aligned_block_read2_neon },
+    { "NEON read 2 data streams prefetched (32 bytes step)",  0, 1, aligned_block_read2_pf32_neon },
+    { "NEON read 2 data streams prefetched (64 bytes step)",  0, 1, aligned_block_read2_pf64_neon },
+    { "NEON copy",                                            0, 1, aligned_block_copy_neon },
+    { "NEON copy prefetched (32 bytes step)",                 0, 1, aligned_block_copy_pf32_neon },
+    { "NEON copy prefetched (64 bytes step)",                 0, 1, aligned_block_copy_pf64_neon },
+    { "NEON unrolled copy",                                   0, 1, aligned_block_copy_unrolled_neon },
+    { "NEON unrolled copy prefetched (32 bytes step)",        0, 1, aligned_block_copy_unrolled_pf32_neon },
+    { "NEON unrolled copy prefetched (64 bytes step)",        0, 1, aligned_block_copy_unrolled_pf64_neon },
+    { "NEON copy backwards",                                  0, 1, aligned_block_copy_backwards_neon },
+    { "NEON copy backwards prefetched (32 bytes step)",       0, 1, aligned_block_copy_backwards_pf32_neon },
+    { "NEON copy backwards prefetched (64 bytes step)",       0, 1, aligned_block_copy_backwards_pf64_neon },
+    { "NEON 2-pass copy",                                     1, 1, aligned_block_copy_neon },
+    { "NEON 2-pass copy prefetched (32 bytes step)",          1, 1, aligned_block_copy_pf32_neon },
+    { "NEON 2-pass copy prefetched (64 bytes step)",          1, 1, aligned_block_copy_pf64_neon },
+    { "NEON unrolled 2-pass copy",                            1, 1, aligned_block_copy_unrolled_neon },
+    { "NEON unrolled 2-pass copy prefetched (32 bytes step)", 1, 1, aligned_block_copy_unrolled_pf32_neon },
+    { "NEON unrolled 2-pass copy prefetched (64 bytes step)", 1, 1, aligned_block_copy_unrolled_pf64_neon },
+    { "NEON fill",                                            0, 1, aligned_block_fill_neon },
+    { "NEON fill backwards",                                  0, 1, aligned_block_fill_backwards_neon },
+    { "VFP copy",                                             0, 1, aligned_block_copy_vfp },
+    { "VFP 2-pass copy",                                      1, 1, aligned_block_copy_vfp },
+    { "ARM fill (STRD)",                                      0, 1, aligned_block_fill_strd_armv5te },
+    { "ARM fill (STM with 8 registers)",                      0, 1, aligned_block_fill_stm8_armv4 },
+    { "ARM fill (STM with 4 registers)",                      0, 1, aligned_block_fill_stm4_armv4 },
+    { "ARM copy prefetched (incr pld)",                       0, 1, aligned_block_copy_incr_armv5te },
+    { "ARM copy prefetched (wrap pld)",                       0, 1, aligned_block_copy_wrap_armv5te },
+    { "ARM 2-pass copy prefetched (incr pld)",                1, 1, aligned_block_copy_incr_armv5te },
+    { "ARM 2-pass copy prefetched (wrap pld)",                1, 1, aligned_block_copy_wrap_armv5te },
+    { NULL, 0, 0, NULL }
 };
 
 static bench_info arm_v5te_vfp[] =
 {
-    { "VFP copy", 0, aligned_block_copy_vfp },
-    { "VFP 2-pass copy", 1, aligned_block_copy_vfp },
-    { "ARM fill (STRD)", 0, aligned_block_fill_strd_armv5te },
-    { "ARM fill (STM with 8 registers)", 0, aligned_block_fill_stm8_armv4 },
-    { "ARM fill (STM with 4 registers)", 0, aligned_block_fill_stm4_armv4 },
-    { "ARM copy prefetched (incr pld)", 0, aligned_block_copy_incr_armv5te },
-    { "ARM copy prefetched (wrap pld)", 0, aligned_block_copy_wrap_armv5te },
-    { "ARM 2-pass copy prefetched (incr pld)", 1, aligned_block_copy_incr_armv5te },
-    { "ARM 2-pass copy prefetched (wrap pld)", 1, aligned_block_copy_wrap_armv5te },
-    { NULL, 0, NULL }
+    { "VFP copy",                              0, 1, aligned_block_copy_vfp },
+    { "VFP 2-pass copy",                       1, 1, aligned_block_copy_vfp },
+    { "ARM fill (STRD)",                       0, 1, aligned_block_fill_strd_armv5te },
+    { "ARM fill (STM with 8 registers)",       0, 1, aligned_block_fill_stm8_armv4 },
+    { "ARM fill (STM with 4 registers)",       0, 1, aligned_block_fill_stm4_armv4 },
+    { "ARM copy prefetched (incr pld)",        0, 1, aligned_block_copy_incr_armv5te },
+    { "ARM copy prefetched (wrap pld)",        0, 1, aligned_block_copy_wrap_armv5te },
+    { "ARM 2-pass copy prefetched (incr pld)", 1, 1, aligned_block_copy_incr_armv5te },
+    { "ARM 2-pass copy prefetched (wrap pld)", 1, 1, aligned_block_copy_wrap_armv5te },
+    { NULL, 0, 0, NULL }
 };
 
 static bench_info arm_v5te[] =
 {
-    { "ARM fill (STRD)", 0, aligned_block_fill_strd_armv5te },
-    { "ARM fill (STM with 8 registers)", 0, aligned_block_fill_stm8_armv4 },
-    { "ARM fill (STM with 4 registers)", 0, aligned_block_fill_stm4_armv4 },
-    { "ARM copy prefetched (incr pld)", 0, aligned_block_copy_incr_armv5te },
-    { "ARM copy prefetched (wrap pld)", 0, aligned_block_copy_wrap_armv5te },
-    { "ARM 2-pass copy prefetched (incr pld)", 1, aligned_block_copy_incr_armv5te },
-    { "ARM 2-pass copy prefetched (wrap pld)", 1, aligned_block_copy_wrap_armv5te },
-    { NULL, 0, NULL }
+    { "ARM fill (STRD)",                       0, 1, aligned_block_fill_strd_armv5te },
+    { "ARM fill (STM with 8 registers)",       0, 1, aligned_block_fill_stm8_armv4 },
+    { "ARM fill (STM with 4 registers)",       0, 1, aligned_block_fill_stm4_armv4 },
+    { "ARM copy prefetched (incr pld)",        0, 1, aligned_block_copy_incr_armv5te },
+    { "ARM copy prefetched (wrap pld)",        0, 1, aligned_block_copy_wrap_armv5te },
+    { "ARM 2-pass copy prefetched (incr pld)", 1, 1, aligned_block_copy_incr_armv5te },
+    { "ARM 2-pass copy prefetched (wrap pld)", 1, 1, aligned_block_copy_wrap_armv5te },
+    { NULL, 0, 0, NULL }
 };
 
 static bench_info arm_v4[] =
 {
-    { "ARM fill (STM with 8 registers)", 0, aligned_block_fill_stm8_armv4 },
-    { "ARM fill (STM with 4 registers)", 0, aligned_block_fill_stm4_armv4 },
-    { NULL, 0, NULL }
+    { "ARM fill (STM with 8 registers)", 0, 1, aligned_block_fill_stm8_armv4 },
+    { "ARM fill (STM with 4 registers)", 0, 1, aligned_block_fill_stm4_armv4 },
+    { NULL, 0, 0, NULL }
 };
 
 bench_info *get_asm_benchmarks(void)
@@ -287,32 +287,32 @@ bench_info *get_asm_benchmarks(void)
 
 static bench_info arm_neon_fb[] =
 {
-    { "NEON read (from framebuffer)", 0, aligned_block_read_neon },
-    { "NEON copy (from framebuffer)", 0, aligned_block_copy_neon },
-    { "NEON 2-pass copy (from framebuffer)", 1, aligned_block_copy_neon },
-    { "NEON unrolled copy (from framebuffer)", 0, aligned_block_copy_unrolled_neon },
-    { "NEON 2-pass unrolled copy (from framebuffer)", 1, aligned_block_copy_unrolled_neon },
-    { "VFP copy (from framebuffer)", 0, aligned_block_copy_vfp },
-    { "VFP 2-pass copy (from framebuffer)", 1, aligned_block_copy_vfp },
-    { "ARM copy (from framebuffer)", 0, aligned_block_copy_incr_armv5te },
-    { "ARM 2-pass copy (from framebuffer)", 1, aligned_block_copy_incr_armv5te },
-    { NULL, 0, NULL }
+    { "NEON read (from framebuffer)",                 0, 1, aligned_block_read_neon },
+    { "NEON copy (from framebuffer)",                 0, 1, aligned_block_copy_neon },
+    { "NEON 2-pass copy (from framebuffer)",          1, 1, aligned_block_copy_neon },
+    { "NEON unrolled copy (from framebuffer)",        0, 1, aligned_block_copy_unrolled_neon },
+    { "NEON 2-pass unrolled copy (from framebuffer)", 1, 1, aligned_block_copy_unrolled_neon },
+    { "VFP copy (from framebuffer)",                  0, 1, aligned_block_copy_vfp },
+    { "VFP 2-pass copy (from framebuffer)",           1, 1, aligned_block_copy_vfp },
+    { "ARM copy (from framebuffer)",                  0, 1, aligned_block_copy_incr_armv5te },
+    { "ARM 2-pass copy (from framebuffer)",           1, 1, aligned_block_copy_incr_armv5te },
+    { NULL, 0, 0, NULL }
 };
 
 static bench_info arm_v5te_vfp_fb[] =
 {
-    { "VFP copy (from framebuffer)", 0, aligned_block_copy_vfp },
-    { "VFP 2-pass copy (from framebuffer)", 1, aligned_block_copy_vfp },
-    { "ARM copy (from framebuffer)", 0, aligned_block_copy_incr_armv5te },
-    { "ARM 2-pass copy (from framebuffer)", 1, aligned_block_copy_incr_armv5te },
-    { NULL, 0, NULL }
+    { "VFP copy (from framebuffer)",        0, 1, aligned_block_copy_vfp },
+    { "VFP 2-pass copy (from framebuffer)", 1, 1, aligned_block_copy_vfp },
+    { "ARM copy (from framebuffer)",        0, 1, aligned_block_copy_incr_armv5te },
+    { "ARM 2-pass copy (from framebuffer)", 1, 1, aligned_block_copy_incr_armv5te },
+    { NULL, 0, 0, NULL }
 };
 
 static bench_info arm_v5te_fb[] =
 {
-    { "ARM copy (from framebuffer)", 0, aligned_block_copy_incr_armv5te },
-    { "ARM 2-pass copy (from framebuffer)", 1, aligned_block_copy_incr_armv5te },
-    { NULL, 0, NULL }
+    { "ARM copy (from framebuffer)",        0, 1, aligned_block_copy_incr_armv5te },
+    { "ARM 2-pass copy (from framebuffer)", 1, 1, aligned_block_copy_incr_armv5te },
+    { NULL, 0, 0, NULL }
 };
 
 bench_info *get_asm_framebuffer_benchmarks(void)
@@ -333,29 +333,29 @@ bench_info *get_asm_framebuffer_benchmarks(void)
 
 static bench_info aarch64_neon[] =
         {
-                {"NEON LDP/STP copy",                           0, aligned_block_copy_ldpstp_q_aarch64},
-                {"NEON LDP/STP copy pldl2strm (32 bytes step)", 0, aligned_block_copy_ldpstp_q_pf32_l2strm_aarch64},
-                {"NEON LDP/STP copy pldl2strm (64 bytes step)", 0, aligned_block_copy_ldpstp_q_pf64_l2strm_aarch64},
-                {"NEON LDP/STP copy pldl1keep (32 bytes step)", 0, aligned_block_copy_ldpstp_q_pf32_l1keep_aarch64},
-                {"NEON LDP/STP copy pldl1keep (64 bytes step)", 0, aligned_block_copy_ldpstp_q_pf64_l1keep_aarch64},
-                {"NEON LD1/ST1 copy",                           0, aligned_block_copy_ld1st1_aarch64},
-                {"NEON STP fill",                               0, aligned_block_fill_stp_q_aarch64},
-                {"NEON STNP fill",                              0, aligned_block_fill_stnp_q_aarch64},
-                {"ARM LDP/STP copy",                            0, aligned_block_copy_ldpstp_x_aarch64},
-                {"ARM STP fill",                                0, aligned_block_fill_stp_x_aarch64},
-                {"ARM STNP fill",                               0, aligned_block_fill_stnp_x_aarch64},
-                {NULL,                                          0, NULL}
+                {"NEON LDP/STP copy",                           0, 1, aligned_block_copy_ldpstp_q_aarch64},
+                {"NEON LDP/STP copy pldl2strm (32 bytes step)", 0, 1, aligned_block_copy_ldpstp_q_pf32_l2strm_aarch64},
+                {"NEON LDP/STP copy pldl2strm (64 bytes step)", 0, 1, aligned_block_copy_ldpstp_q_pf64_l2strm_aarch64},
+                {"NEON LDP/STP copy pldl1keep (32 bytes step)", 0, 1, aligned_block_copy_ldpstp_q_pf32_l1keep_aarch64},
+                {"NEON LDP/STP copy pldl1keep (64 bytes step)", 0, 1, aligned_block_copy_ldpstp_q_pf64_l1keep_aarch64},
+                {"NEON LD1/ST1 copy",                           0, 1, aligned_block_copy_ld1st1_aarch64},
+                {"NEON STP fill",                               0, 1, aligned_block_fill_stp_q_aarch64},
+                {"NEON STNP fill",                              0, 1, aligned_block_fill_stnp_q_aarch64},
+                {"ARM LDP/STP copy",                            0, 1, aligned_block_copy_ldpstp_x_aarch64},
+                {"ARM STP fill",                                0, 1, aligned_block_fill_stp_x_aarch64},
+                {"ARM STNP fill",                               0, 1, aligned_block_fill_stnp_x_aarch64},
+                {NULL,                                          0, 0, NULL}
         };
 
 static bench_info aarch64_neon_fb[] =
         {
-                {"NEON LDP/STP copy (from framebuffer)",        0, aligned_block_copy_ldpstp_q_aarch64},
-                {"NEON LDP/STP 2-pass copy (from framebuffer)", 1, aligned_block_copy_ldpstp_q_aarch64},
-                {"NEON LD1/ST1 copy (from framebuffer)",        0, aligned_block_copy_ld1st1_aarch64},
-                {"NEON LD1/ST1 2-pass copy (from framebuffer)", 1, aligned_block_copy_ld1st1_aarch64},
-                {"ARM LDP/STP copy (from framebuffer)",         0, aligned_block_copy_ldpstp_x_aarch64},
-                {"ARM LDP/STP 2-pass copy (from framebuffer)",  1, aligned_block_copy_ldpstp_x_aarch64},
-                {NULL,                                          0, NULL}
+                {"NEON LDP/STP copy (from framebuffer)",        0, 1, aligned_block_copy_ldpstp_q_aarch64},
+                {"NEON LDP/STP 2-pass copy (from framebuffer)", 1, 1, aligned_block_copy_ldpstp_q_aarch64},
+                {"NEON LD1/ST1 copy (from framebuffer)",        0, 1, aligned_block_copy_ld1st1_aarch64},
+                {"NEON LD1/ST1 2-pass copy (from framebuffer)", 1, 1, aligned_block_copy_ld1st1_aarch64},
+                {"ARM LDP/STP copy (from framebuffer)",         0, 1, aligned_block_copy_ldpstp_x_aarch64},
+                {"ARM LDP/STP 2-pass copy (from framebuffer)",  1, 1, aligned_block_copy_ldpstp_x_aarch64},
+                {NULL,                                          0, 0, NULL}
         };
 
 bench_info *get_asm_benchmarks(void) {
@@ -372,10 +372,10 @@ bench_info *get_asm_framebuffer_benchmarks(void) {
 
 static bench_info mips_32[] =
 {
-    { "MIPS32 copy prefetched (32 bytes step)", 0, aligned_block_copy_pf32_mips32 },
-    { "MIPS32 2-pass copy prefetched (32 bytes step)", 1, aligned_block_copy_pf32_mips32 },
-    { "MIPS32 fill prefetched (32 bytes step)", 0, aligned_block_fill_pf32_mips32 },
-    { NULL, 0, NULL }
+    { "MIPS32 copy prefetched (32 bytes step)", 0, 1, aligned_block_copy_pf32_mips32 },
+    { "MIPS32 2-pass copy prefetched (32 bytes step)", 1, 1, aligned_block_copy_pf32_mips32 },
+    { "MIPS32 fill prefetched (32 bytes step)", 0, 1, aligned_block_fill_pf32_mips32 },
+    { NULL, 0, 0, NULL }
 };
 
 bench_info *get_asm_benchmarks(void)

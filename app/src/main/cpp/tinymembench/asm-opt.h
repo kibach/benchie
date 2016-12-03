@@ -30,6 +30,7 @@ typedef struct
 {
     const char *description;
     int use_tmpbuf;
+    int score;
     void (*f)(int64_t *, int64_t *, int);
 } bench_info;
 

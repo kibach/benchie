@@ -41,6 +41,7 @@ extern "C" {
 }
 
 #include "jni.h"
+#include "asm-opt.h"
 #include <iostream>
 
 #define SIZE             (32 * 1024 * 1024)
@@ -70,6 +71,21 @@ static void *mmap_framebuffer(size_t *fbsize)
 }
 #endif
 
+// Speed result storage
+double diversity = 0;
+double outer_max_speed = 0;
+
+// Speed buffers
+int64_t *speed_srcbuf, *speed_dstbuf, *speed_tmpbuf;
+void *speed_poolbuf;
+
+// Latency config
+int latbench_size = SIZE * 2, latbench_count = 10000000;
+
+// Framebuf buffers
+size_t fbsize;
+int64_t *fbbuf;
+
 static double bandwidth_bench_helper(int64_t *dstbuf, int64_t *srcbuf,
                                      int64_t *tmpbuf,
                                      int size, int blocksize,
@@ -84,6 +100,7 @@ static double bandwidth_bench_helper(int64_t *dstbuf, int64_t *srcbuf,
     double s, s0, s1, s2;
 
     /* do up to MAXREPEATS measurements */
+    s = 0;
     s0 = s1 = s2 = 0;
     maxspeed   = 0;
     for (n = 0; n < MAXREPEATS; n++)
@@ -133,15 +150,9 @@ static double bandwidth_bench_helper(int64_t *dstbuf, int64_t *srcbuf,
         }
     }
 
-    if (s / maxspeed * 100. >= 0.1)
-    {
-        printf("%s%-52s : %8.1f MB/s (%.1f%%)\n", indent_prefix, description,
-                                               maxspeed, s / maxspeed * 100.);
-    }
-    else
-    {
-        printf("%s%-52s : %8.1f MB/s\n", indent_prefix, description, maxspeed);
-    }
+    outer_max_speed = maxspeed;
+    diversity = s / maxspeed * 100.;
+
     return maxspeed;
 }
 
@@ -157,27 +168,27 @@ void memset_wrapper(int64_t *dst, int64_t *src, int size)
 
 static bench_info c_benchmarks[] =
 {
-    { "C copy backwards", 0, aligned_block_copy_backwards },
-    { "C copy backwards (32 byte blocks)", 0, aligned_block_copy_backwards_bs32 },
-    { "C copy backwards (64 byte blocks)", 0, aligned_block_copy_backwards_bs64 },
-    { "C copy", 0, aligned_block_copy },
-    { "C copy prefetched (32 bytes step)", 0, aligned_block_copy_pf32 },
-    { "C copy prefetched (64 bytes step)", 0, aligned_block_copy_pf64 },
-    { "C 2-pass copy", 1, aligned_block_copy },
-    { "C 2-pass copy prefetched (32 bytes step)", 1, aligned_block_copy_pf32 },
-    { "C 2-pass copy prefetched (64 bytes step)", 1, aligned_block_copy_pf64 },
-    { "C fill", 0, aligned_block_fill },
-    { "C fill (shuffle within 16 byte blocks)", 0, aligned_block_fill_shuffle16 },
-    { "C fill (shuffle within 32 byte blocks)", 0, aligned_block_fill_shuffle32 },
-    { "C fill (shuffle within 64 byte blocks)", 0, aligned_block_fill_shuffle64 },
-    { NULL, 0, NULL }
+    { "C copy backwards",                         0, 1, aligned_block_copy_backwards },
+    { "C copy backwards (32 byte blocks)",        0, 1, aligned_block_copy_backwards_bs32 },
+    { "C copy backwards (64 byte blocks)",        0, 1, aligned_block_copy_backwards_bs64 },
+    { "C copy",                                   0, 1, aligned_block_copy },
+    { "C copy prefetched (32 bytes step)",        0, 1, aligned_block_copy_pf32 },
+    { "C copy prefetched (64 bytes step)",        0, 1, aligned_block_copy_pf64 },
+    { "C 2-pass copy",                            1, 1, aligned_block_copy },
+    { "C 2-pass copy prefetched (32 bytes step)", 1, 1, aligned_block_copy_pf32 },
+    { "C 2-pass copy prefetched (64 bytes step)", 1, 1, aligned_block_copy_pf64 },
+    { "C fill",                                   0, 1, aligned_block_fill },
+    { "C fill (shuffle within 16 byte blocks)",   0, 1, aligned_block_fill_shuffle16 },
+    { "C fill (shuffle within 32 byte blocks)",   0, 1, aligned_block_fill_shuffle32 },
+    { "C fill (shuffle within 64 byte blocks)",   0, 1, aligned_block_fill_shuffle64 },
+    { NULL, 0, 0, NULL }
 };
 
 static bench_info libc_benchmarks[] =
 {
-    { "standard memcpy", 0, memcpy_wrapper },
-    { "standard memset", 0, memset_wrapper },
-    { NULL, 0, NULL }
+    { "standard memcpy", 0, 1, memcpy_wrapper },
+    { "standard memset", 0, 1, memset_wrapper },
+    { NULL, 0, 0, NULL }
 };
 
 void bandwidth_bench(int64_t *dstbuf, int64_t *srcbuf, int64_t *tmpbuf,
@@ -362,7 +373,7 @@ static void __attribute__((noinline)) random_dual_read_test(char *zerobuffer,
 
 static uint32_t rand32()
 {
-    static int seed = 0;
+    static unsigned int seed = 0;
     uint32_t hi, lo;
     hi = (seed = seed * 1103515245 + 12345) >> 16;
     lo = (seed = seed * 1103515245 + 12345) >> 16;
@@ -470,9 +481,8 @@ int latency_bench(int size, int count, int use_hugepage) {
 }
 }
 
-int main(void)
+int mainz(void)
 {
-    int latbench_size = SIZE * 2, latbench_count = 10000000;
     int64_t *srcbuf, *dstbuf, *tmpbuf;
     void *poolbuf;
     size_t bufsize = SIZE;
@@ -578,16 +588,139 @@ int main(void)
     return 0;
 }
 
-extern "C"
-jstring
-Java_com_me_kbocharov_bochbench_benchmark_tinymembench_Runner_stringFromJNI(
+extern "C" {
+
+jobjectArray
+getJavaBenchInfo(
         JNIEnv *env,
-        jobject /* this */) {
-    std::string hello = "Hello from C++";
-    return env->NewStringUTF(hello.c_str());
+        bench_info *bi) {
+    bench_info *newbi = bi;
+
+    int count = 0;
+    while (newbi->f) {
+        count++;
+        newbi++;
+    }
+
+    jclass nbiClass = env->FindClass("com/me/kbocharov/bochbench/benchmark/tinymembench/NativeBenchInfo");
+
+    jobjectArray arr = env->NewObjectArray(
+            count,
+            nbiClass,
+            0
+    );
+
+    jmethodID constructor = env->GetMethodID(nbiClass, "<init>", "(II[BLjava/lang/String;)V");
+
+    newbi = bi;
+    jboolean isCopy;
+
+    for (int i = 0; i < count; ++i) {
+        jbyteArray bArray = env->NewByteArray(sizeof(newbi->f));
+        void *data = env->GetPrimitiveArrayCritical((jarray)bArray, &isCopy);
+        memcpy(data, &newbi->f, sizeof(newbi->f));
+
+        jobject item = env->NewObject(
+                nbiClass,
+                constructor,
+                newbi->use_tmpbuf,
+                newbi->score,
+                bArray,
+                env->NewStringUTF(newbi->description)
+        );
+        env->SetObjectArrayElement(arr, i, item);
+    }
+
+    return arr;
 }
 
+jobjectArray Java_com_me_kbocharov_bochbench_benchmark_tinymembench_Runner_getCSpeedBench(JNIEnv *env,
+                                                                                    jobject _this) {
+    return getJavaBenchInfo(env, c_benchmarks);
+}
 
+jobjectArray Java_com_me_kbocharov_bochbench_benchmark_tinymembench_Runner_getLibCSpeedBench(JNIEnv *env,
+                                                                                     jobject _this) {
+    return getJavaBenchInfo(env, libc_benchmarks);
+}
+
+jobjectArray Java_com_me_kbocharov_bochbench_benchmark_tinymembench_Runner_getAsmSpeedBench(JNIEnv *env,
+                                                                                     jobject _this) {
+    return getJavaBenchInfo(env, get_asm_benchmarks());
+}
+
+jobjectArray Java_com_me_kbocharov_bochbench_benchmark_tinymembench_Runner_getFrameBufferBench(JNIEnv *env,
+                                                                                                jobject _this) {
+#ifdef __linux__
+    return getJavaBenchInfo(env, get_asm_framebuffer_benchmarks());
+#else
+    return nullptr;
+#endif
+}
+
+jobject Java_com_me_kbocharov_bochbench_benchmark_tinymembench_Runner_setUpStage(JNIEnv *env,
+                                                                                 jobject _this) {
+    speed_poolbuf = alloc_four_nonaliased_buffers(
+            (void **)&speed_srcbuf,
+            SIZE,
+            (void **)&speed_dstbuf,
+            SIZE,
+            (void **)&speed_tmpbuf,
+            BLOCKSIZE,
+            NULL,
+            0
+    );
+
+#ifdef __linux__
+    fbbuf = (int64_t *) mmap_framebuffer(&fbsize);
+    fbsize = (fbsize / BLOCKSIZE) * BLOCKSIZE;
+#endif
+
+    return nullptr;
+}
+
+jobject Java_com_me_kbocharov_bochbench_benchmark_tinymembench_Runner_turnDownStage(JNIEnv *env,
+                                                                                    jobject _this) {
+    free(speed_poolbuf);
+    return nullptr;
+}
+
+jobject Java_com_me_kbocharov_bochbench_benchmark_tinymembench_Runner_runSpeedBench(JNIEnv *env,
+                                                                                    jobject _this,
+                                                                                    jobject nbi) {
+    void (*my_f)(int64_t *, int64_t *, int);
+    jclass nbiClass = env->GetObjectClass(nbi);
+
+    jfieldID f_ptr = env->GetFieldID(nbiClass, "f", "[B");
+    jobject f_obj = env->GetObjectField(nbi, f_ptr);
+    jbyteArray * f_bar = reinterpret_cast<jbyteArray*>(f_obj);
+    jbyte * data = env->GetByteArrayElements(*f_bar, NULL);
+    memcpy(&my_f, data, sizeof(my_f));
+    env->ReleaseByteArrayElements(*f_bar, data, 0);
+
+    jfieldID use_tmp = env->GetFieldID(nbiClass, "use_tmpbuf", "I");
+    int my_use_tmpbuf = env->GetIntField(nbi, use_tmp);
+
+    bandwidth_bench_helper(
+            speed_dstbuf,
+            speed_srcbuf,
+            speed_tmpbuf,
+            SIZE,
+            BLOCKSIZE,
+            " ",
+            my_use_tmpbuf,
+            my_f,
+            ""
+    );
+
+    jclass sbrClass = env->FindClass("com/me/kbocharov/bochbench/benchmark/tinymembench/SpeedBenchResult");
+    jmethodID constructor = env->GetMethodID(nbiClass, "<init>", "(DD)V");
+
+    jobject sbr = env->NewObject(sbrClass, constructor, outer_max_speed, diversity);
+    return sbr;
+}
+
+}
 /*
 int main()
 {

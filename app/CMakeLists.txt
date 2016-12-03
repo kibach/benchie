@@ -2,7 +2,7 @@
 # library. You should either keep the default value or only pass a
 # value of 3.4.0 or lower.
 
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.0.1)
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
@@ -11,13 +11,15 @@ cmake_minimum_required(VERSION 3.4.1)
 
 # set_property(SOURCE <myfile>.S PROPERTY LANGUAGE C)
 
+# set(CMAKE_C_COMPILER "E:\\AndroidSdks\\Sdk\\ndk-bundle\\toolchains\\x86_64-4.9\\prebuilt\\windows-x86_64\\bin\\x86_64-linux-android-gcc-4.9.exe")
+
 set(can_use_assembler TRUE)
 enable_language(C ASM)
 
 include_directories(src/main/cpp/tinymembench)
 link_directories(src/main/cpp/tinymembench)
 
-SET(GCC_COVERAGE_LINK_FLAGS    "-lgnustl_static")
+# SET(GCC_COVERAGE_LINK_FLAGS    "-lgnustl_static")
 
 SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS}")
 SET(ASM_OPTIONS "-x assembler-with-cpp")
@@ -50,8 +52,8 @@ add_library( # Sets the name of the library.
              # Provides a relative path to your source file(s).
              # Associated headers in the same location as their source
              # file are automatically included.
-#             src/main/cpp/tinymembench/aarch64-asm.S
-#             src/main/cpp/tinymembench/arm-neon.S
+             src/main/cpp/tinymembench/aarch64-asm.S
+             src/main/cpp/tinymembench/arm-neon.S
              src/main/cpp/tinymembench/mips-32.S
              src/main/cpp/tinymembench/x86-sse2.S
              src/main/cpp/tinymembench/asm-opt.c

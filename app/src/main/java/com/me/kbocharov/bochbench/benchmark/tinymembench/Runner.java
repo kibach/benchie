@@ -5,6 +5,8 @@ package com.me.kbocharov.bochbench.benchmark.tinymembench;
  */
 
 public class Runner {
+
+
     static {
         System.loadLibrary("tmblib");
     }
