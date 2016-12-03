@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.me.kbocharov.bochbench.benchmark.BenchmarkResponder;
 import com.me.kbocharov.bochbench.benchmark.BenchmarkResult;
 import com.me.kbocharov.bochbench.benchmark.BenchmarkTask;
+import com.me.kbocharov.bochbench.benchmark.tinymembench.LatencyBenchResult;
 import com.me.kbocharov.bochbench.benchmark.tinymembench.NativeBenchInfo;
 import com.me.kbocharov.bochbench.benchmark.tinymembench.Runner;
 
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements BenchmarkResponde
     public native String stringFromJNI();
 
     @Override
-    public void respondOnBenchmarkEnd(List<BenchmarkResult> resultList) {
+    public void respondOnBenchmarkEnd(List<BenchmarkResult> resultList, LatencyBenchResult[] latencyBenchResults) {
         double total = 0;
         for (BenchmarkResult res: resultList) {
             total += res.getMFLOPS();

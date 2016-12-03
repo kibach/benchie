@@ -1,5 +1,7 @@
 package com.me.kbocharov.bochbench.benchmark;
 
+import com.me.kbocharov.bochbench.benchmark.tinymembench.LatencyBenchResult;
+
 import java.util.List;
 
 /**
@@ -7,5 +9,5 @@ import java.util.List;
  */
 
 public interface BenchmarkResponder {
-    public void respondOnBenchmarkEnd(List<BenchmarkResult> resultList);
+    public void respondOnBenchmarkEnd(List<BenchmarkResult> resultList, LatencyBenchResult[] latencyBenchResults);
 }
