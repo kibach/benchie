@@ -116,7 +116,7 @@ int check_cpu_feature(const char *feature)
 
 #endif
 
-static bench_info empty[] = {{NULL, 0, NULL}};
+static bench_info empty[] = {{NULL, 0, 0, NULL}};
 
 #if defined(__i386__) || defined(__amd64__)
 

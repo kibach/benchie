@@ -676,13 +676,13 @@ jobject Java_com_me_kbocharov_bochbench_benchmark_tinymembench_Runner_setUpStage
     fbsize = (fbsize / BLOCKSIZE) * BLOCKSIZE;
 #endif
 
-    return nullptr;
+    return NULL;
 }
 
 jobject Java_com_me_kbocharov_bochbench_benchmark_tinymembench_Runner_turnDownStage(JNIEnv *env,
                                                                                     jobject _this) {
     free(speed_poolbuf);
-    return nullptr;
+    return NULL;
 }
 
 jobject Java_com_me_kbocharov_bochbench_benchmark_tinymembench_Runner_runSpeedBench(JNIEnv *env,
