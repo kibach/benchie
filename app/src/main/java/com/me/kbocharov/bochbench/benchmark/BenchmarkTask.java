@@ -61,7 +61,7 @@ public class BenchmarkTask extends AsyncTask<Void, Integer, Attempt> {
             }
         }
 
-        LatencyBenchResult[] lbrs_huge = runner.runLatencyBench(Runner.MADV_HUGEPAGE);
+        /*LatencyBenchResult[] lbrs_huge = runner.runLatencyBench(Runner.MADV_HUGEPAGE);
         publishProgress(test_count++);
         LatencyBenchResult[] lbrs_nohuge = runner.runLatencyBench(Runner.MADV_NOHUGEPAGE);
         publishProgress(test_count++);
@@ -74,7 +74,7 @@ public class BenchmarkTask extends AsyncTask<Void, Integer, Attempt> {
                 lbrs[i].size = lbrs_huge[i].size;
                 lbrs[i].single_read = (lbrs_huge[i].single_read + lbrs_nohuge[i].single_read) / 2;
                 lbrs[i].double_read = (lbrs_huge[i].double_read + lbrs_nohuge[i].double_read) / 2;
-            }*/
+            }
         }
 
         for (LatencyBenchResult lbr: lbrs) {
@@ -85,10 +85,11 @@ public class BenchmarkTask extends AsyncTask<Void, Integer, Attempt> {
         }
         for (LatencyBenchResult lbr: lbrs_nohuge) {
             attempt.addLatencyValue(lbr, Runner.MADV_NOHUGEPAGE);
-        }
+        }*/
 
         runner.turnDownStage();
 
+        /*
         for (Benchmark b : multiplicationBenchmarks) {
             for (int n : multiplicationSizes) {
                 BenchmarkResult result = b.run(n, 5.0);
@@ -97,7 +98,7 @@ public class BenchmarkTask extends AsyncTask<Void, Integer, Attempt> {
                 attempt.addMultiplicationValue(result);
                 publishProgress(test_count++);
             }
-        }
+        }*/
 
         return attempt;
     }
