@@ -1,18 +1,18 @@
-package com.me.kbocharov.bochbench.benchmark;
+package com.me.kbocharov.bochbench.benchmark.multiplication;
 
-import static org.jblas.FloatMatrix.randn;
+import static org.jblas.DoubleMatrix.*;
 
 /**
  *
  */
-class JavaFloatMultiplicationBenchmark implements Benchmark {
+public class JavaDoubleMultiplicationBenchmark implements Benchmark {
 
     public String getName() {
-        return "Java matrix multiplication, single precision";
+        return "Java matrix multiplication, double precision";
     }
 
     /** Compute C = A * B */
-    private void mmuli(int n, float[] A, float[] B, float[] C) {
+    private void mmuli(int n, double[] A, double[] B, double[] C) {
         for (int i = 0; i < n * n; i++) {
             C[i] = 0;
         }
@@ -21,7 +21,7 @@ class JavaFloatMultiplicationBenchmark implements Benchmark {
             int jn = j * n;
             for (int k = 0; k < n; k++) {
                 int kn = k * n;
-                float bkjn = B[k + jn];
+                double bkjn = B[k + jn];
                 for (int i = 0; i < n; i++) {
                     C[i + jn] += A[i + kn] * bkjn;
                 }
@@ -33,9 +33,9 @@ class JavaFloatMultiplicationBenchmark implements Benchmark {
         int counter = 0;
         long ops = 0;
 
-        float[] A = randn(size, size).data;
-        float[] B = randn(size, size).data;
-        float[] C = randn(size, size).data;
+        double[] A = randn(size, size).data;
+        double[] B = randn(size, size).data;
+        double[] C = randn(size, size).data;
 
         Timer t = new Timer();
         t.start();

@@ -1,9 +1,9 @@
-package com.me.kbocharov.bochbench.benchmark;
+package com.me.kbocharov.bochbench.benchmark.multiplication;
 
 /**
  *
  */
-interface Benchmark {
+public interface Benchmark {
 
     public String getName();
 

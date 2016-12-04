@@ -56,16 +56,62 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:layout_marginTop="142dp"
-                android:layout_alignTop="@+id/scoreView"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true">
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/imageView2">
 
                 <ProgressBar
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:indeterminate="true" />
+                    android:indeterminate="true"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:gravity="bottom">
+
+                    <Button
+                        android:text="Clear all"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/clearAll"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_weight="1" />
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="100dp"
+                        android:layout_weight="1" />
+
+                    <Button
+                        android:text="Results"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/results"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
             </RelativeLayout>
+
+            <TextView
+                android:text="TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                android:id="@+id/subCaption"
+                android:layout_marginBottom="66dp"
+                android:layout_above="@+id/button2"
+                android:layout_centerHorizontal="true" />
         </RelativeLayout>
 
     </LinearLayout>

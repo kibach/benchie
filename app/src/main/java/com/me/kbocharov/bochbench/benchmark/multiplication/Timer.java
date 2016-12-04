@@ -1,32 +1,32 @@
-package com.me.kbocharov.bochbench.benchmark;
+package com.me.kbocharov.bochbench.benchmark.multiplication;
 
 /**
  *
  * @author mikio
  */
-class Timer {
+public class Timer {
     long startTime;
     long stopTime;
 
-    Timer() {
+    public Timer() {
         startTime = -1;
         stopTime = -1;
     }
-    
-    void start() {
+
+    public void start() {
         startTime = System.nanoTime();
     }
-    
-    long stop() {
+
+    public long stop() {
         stopTime = System.nanoTime();
         return stopTime - startTime;
     }
 
-    boolean ranFor(double seconds) {
+    public boolean ranFor(double seconds) {
         return (System.nanoTime() - startTime) / 1e9 >= seconds;
     }
 
-    double elapsedSeconds() {
+    public double elapsedSeconds() {
         return (stopTime - startTime) / 1e9;
     }
 }

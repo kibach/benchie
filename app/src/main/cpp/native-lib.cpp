@@ -1,5 +1,6 @@
 #include <jni.h>
 #include <string>
+#include <chrono>
 
 jdouble *z_A;
 jdoubleArray _jA;
@@ -16,6 +17,22 @@ jfloatArray  __jB;
 jfloat *__C;
 jfloatArray  __jC;
 int __n = 0;
+
+class Timer
+{
+public:
+    Timer() : beg_(clock_::now()) {}
+    void reset() { beg_ = clock_::now(); }
+    double elapsed() const {
+        return std::chrono::duration_cast<second_>
+                (clock_::now() - beg_).count(); }
+
+private:
+    typedef std::chrono::high_resolution_clock clock_;
+    typedef std::chrono::duration<double, std::ratio<1> > second_;
+    std::chrono::time_point<clock_> beg_;
+};
+
 
 void mmuli(int n, jdouble * A, jdouble * B, jdouble * C) {
     for (int i = 0; i < n * n; i++) {
@@ -53,7 +70,7 @@ void mmuli(int n, jfloat * A, jfloat * B, jfloat * C) {
 
 extern "C"
 void
-Java_com_me_kbocharov_bochbench_benchmark_NativeDoubleMultiplicationBenchmark_prepareStage(
+Java_com_me_kbocharov_bochbench_benchmark_multiplication_NativeDoubleMultiplicationBenchmark_prepareStage(
         JNIEnv *env,
         jobject _this,
         jint n,
@@ -72,16 +89,32 @@ Java_com_me_kbocharov_bochbench_benchmark_NativeDoubleMultiplicationBenchmark_pr
 }
 
 extern "C"
-void
-        Java_com_me_kbocharov_bochbench_benchmark_NativeDoubleMultiplicationBenchmark_mmuli(
+jobject
+Java_com_me_kbocharov_bochbench_benchmark_multiplication_NativeDoubleMultiplicationBenchmark_mmuli(
         JNIEnv *env,
-        jobject _this) {
-    mmuli(_n, z_A, z_B, z_C);
+        jobject _this,
+        jdouble sec) {
+    int counter = 0;
+    long ops = 0;
+    double duration = 0;
+    Timer tmr;
+    while (tmr.elapsed() < sec) {
+        mmuli(_n, z_A, z_B, z_C);;
+        counter++;
+        ops += 2L * _n * _n * _n;
+    }
+    duration = tmr.elapsed();
+
+    jclass brClass = env->FindClass("com/me/kbocharov/bochbench/benchmark/multiplication/BenchmarkResult");
+    jmethodID constructor = env->GetMethodID(brClass, "<init>", "(JDI)V");
+
+    jobject ret = env->NewObject(brClass, constructor, ops, duration, counter);
+    return ret;
 }
 
 extern "C"
 void
-Java_com_me_kbocharov_bochbench_benchmark_NativeDoubleMultiplicationBenchmark_cleanupStage(
+Java_com_me_kbocharov_bochbench_benchmark_multiplication_NativeDoubleMultiplicationBenchmark_cleanupStage(
         JNIEnv *env,
         jobject _this) {
     /*env->ReleaseDoubleArrayElements(_jA, z_A, 0);
@@ -91,7 +124,7 @@ Java_com_me_kbocharov_bochbench_benchmark_NativeDoubleMultiplicationBenchmark_cl
 
 extern "C"
 void
-Java_com_me_kbocharov_bochbench_benchmark_NativeFloatMultiplicationBenchmark_prepareStage(
+Java_com_me_kbocharov_bochbench_benchmark_multiplication_NativeFloatMultiplicationBenchmark_prepareStage(
         JNIEnv *env,
         jobject _this,
         jint n,
@@ -110,16 +143,32 @@ Java_com_me_kbocharov_bochbench_benchmark_NativeFloatMultiplicationBenchmark_pre
 }
 
 extern "C"
-void
-Java_com_me_kbocharov_bochbench_benchmark_NativeFloatMultiplicationBenchmark_mmuli(
+jobject
+Java_com_me_kbocharov_bochbench_benchmark_multiplication_NativeFloatMultiplicationBenchmark_mmuli(
         JNIEnv *env,
-        jobject _this) {
-    mmuli(__n, __A, __B, __C);
+        jobject _this,
+        jdouble sec) {
+    int counter = 0;
+    long ops = 0;
+    double duration = 0;
+    Timer tmr;
+    while (tmr.elapsed() < sec) {
+        mmuli(__n, __A, __B, __C);
+        counter++;
+        ops += 2L * __n * __n * __n;
+    }
+    duration = tmr.elapsed();
+
+    jclass brClass = env->FindClass("com/me/kbocharov/bochbench/benchmark/multiplication/BenchmarkResult");
+    jmethodID constructor = env->GetMethodID(brClass, "<init>", "(JDI)V");
+
+    jobject ret = env->NewObject(brClass, constructor, ops, duration, counter);
+    return ret;
 }
 
 extern "C"
 void
-Java_com_me_kbocharov_bochbench_benchmark_NativeFloatMultiplicationBenchmark_cleanupStage(
+Java_com_me_kbocharov_bochbench_benchmark_multiplication_NativeFloatMultiplicationBenchmark_cleanupStage(
         JNIEnv *env,
         jobject _this) {
     /*env->ReleaseFloatArrayElements(__jA, __A, 0);
